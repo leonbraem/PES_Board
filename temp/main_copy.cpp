@@ -5,7 +5,6 @@
 
 // drivers
 #include "DebounceIn.h"
-#include "Servo.h"
 
 bool do_execute_main_task = false; // this variable will be toggled via the user button (blue button) and
                                    // decides whether to execute the main task or not
@@ -40,15 +39,6 @@ int main()
 
     // --- adding variables and objects and applying functions starts here ---
 
-    //object for servo
-    Servo servo_D0(PB_D0);
-    Servo servo_D1(PB_D1);
-
-    //servo variables
-    float servo_input = 0.0f;
-    int servo_counter = 0; // define servo counter, this is an additional variable used to command the servo
-    const int loops_per_seconds = static_cast<int>(ceilf(1.0f / (0.001f * static_cast<float>(main_task_period_ms))));
-
     // start timer
     main_task_timer.start();
 
@@ -58,29 +48,9 @@ int main()
 
         // --- code that runs every cycle at the start goes here ---
 
-        // print to the serial terminal
-        printf("Pulse width: %f \n", servo_input);
-
         if (do_execute_main_task) {
 
             // --- code that runs when the blue button was pressed goes here ---
-
-            // enable the servos
-            if (!servo_D0.isEnabled())
-                servo_D0.enable();
-            if (!servo_D1.isEnabled())
-                servo_D1.enable();
-            
-            // command the servos
-            servo_D0.setPulseWidth(servo_input);
-            servo_D1.setPulseWidth(servo_input);
-
-            // calculate inputs for the servos for the next cycle
-            if ((servo_input < 1.0f) &&                     // constrain servo_input to be < 1.0f
-                (servo_counter % loops_per_seconds == 0) && // true if servo_counter is a multiple of loops_per_second
-                (servo_counter != 0))                       // avoid servo_counter = 0
-                servo_input += 0.005f;
-            servo_counter++;
 
             // visual feedback that the main task is executed, setting this once would actually be enough
             led1 = 1;
@@ -90,12 +60,6 @@ int main()
                 do_reset_all_once = false;
 
                 // --- variables and objects that should be reset go here ---
-                
-                // reset variables and objects
-                led1 = 0;
-                servo_D0.disable();
-                servo_D1.disable();
-                servo_input = 0.0f;
 
                 // reset variables and objects
                 led1 = 0;
