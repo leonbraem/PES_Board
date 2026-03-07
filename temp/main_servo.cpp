@@ -96,9 +96,6 @@ int main()
                 servo_D0.disable();
                 servo_D1.disable();
                 servo_input = 0.0f;
-
-                // reset variables and objects
-                led1 = 0;
             }
         }
 
